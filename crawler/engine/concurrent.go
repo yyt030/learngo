@@ -20,6 +20,8 @@ type ReadyNotifier interface {
 	WorkerReady(chan Request)
 }
 
+var visitedUrls = make(map[string]bool)
+
 func (e *ConcurrentEngine) Run(seeds ...Request) {
 	//in := make(chan Request)
 	out := make(chan ParseResult)
@@ -30,6 +32,9 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 
 	for _, r := range seeds {
+		if isDuplicate(r.Url) {
+			continue
+		}
 		e.Scheduler.Submit(r)
 	}
 
@@ -41,6 +46,9 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 			itemCount++
 		}
 		for _, request := range result.Requests {
+			if isDuplicate(request.Url) {
+				continue
+			}
 			e.Scheduler.Submit(request)
 		}
 	}
@@ -60,4 +68,12 @@ func createWorker(in chan Request, out chan ParseResult, ready ReadyNotifier) {
 			out <- result
 		}
 	}()
+}
+
+func isDuplicate(url string) bool {
+	if visitedUrls[url] {
+		return true
+	}
+	visitedUrls[url] = true
+	return false
 }

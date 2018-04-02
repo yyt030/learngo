@@ -6,11 +6,13 @@ import (
 	"learngo/crawler/engine"
 )
 
-const cityRe = `<a href="(http://album.zhenai.com/u/[0-9]+)"[^>]*>([^<]+)</a>`
+var (
+	profileRe = regexp.MustCompile(`<a href="(http://album.zhenai.com/u/[0-9]+)"[^>]*>([^<]+)</a>`)
+	cityUrlRe = regexp.MustCompile(`href="(http://www.zhenai.com/zhenghun/[^"]+)"`)
+)
 
 func ParseCity(contents []byte) engine.ParseResult {
-	re := regexp.MustCompile(cityRe)
-	match := re.FindAllSubmatch(contents, -1)
+	match := profileRe.FindAllSubmatch(contents, -1)
 	result := engine.ParseResult{}
 	for _, m := range match {
 		userName := string(m[2])
@@ -22,5 +24,15 @@ func ParseCity(contents []byte) engine.ParseResult {
 			},
 		})
 	}
+
+	submatchs := cityUrlRe.FindAllSubmatch(contents, -1)
+	for _, m := range submatchs {
+		result.Requests = append(result.Requests, engine.Request{
+			Url:       string(m[1]),
+			ParseFunc: ParseCity,
+		})
+
+	}
+
 	return result
 }
