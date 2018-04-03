@@ -40,13 +40,14 @@ func TestItemSaver(t *testing.T) {
 	}
 
 	//Save expected item
-	err = saver(expected, client)
+	const index = "dating_test"
+	err = saver(client, index, expected)
 	if err != nil {
 		t.Errorf("error: %v", err)
 	}
 
 	// fetch saved item
-	resp, err := client.Get().Index("dating_profile").
+	resp, err := client.Get().Index(index).
 		Type(expected.Type).
 		Id(expected.Id).
 		Do(context.Background())
