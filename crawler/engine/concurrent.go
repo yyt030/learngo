@@ -20,7 +20,6 @@ type ReadyNotifier interface {
 var visitedUrls = make(map[string]bool)
 
 func (e *ConcurrentEngine) Run(seeds ...Request) {
-	//in := make(chan Request)
 	out := make(chan ParseResult)
 	e.Scheduler.Run()
 
@@ -38,8 +37,9 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	for {
 		result := <-out
 		for _, item := range result.Items {
+			i := item
 			go func() {
-				e.ItemChan <- item
+				e.ItemChan <- i
 			}()
 		}
 		for _, request := range result.Requests {
