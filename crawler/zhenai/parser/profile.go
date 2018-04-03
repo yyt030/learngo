@@ -25,18 +25,9 @@ func ParseProfile(contents []byte, name string) engine.ParseResult {
 	profile := model.Profile{}
 
 	// int of profile
-	age, err := strconv.Atoi(extractString(contents, ageRe))
-	if err == nil {
-		profile.Age = age
-	}
-	height, err := strconv.Atoi(extractString(contents, heightRe))
-	if err == nil {
-		profile.Height = height
-	}
-	weight, err := strconv.Atoi(extractString(contents, weightRe))
-	if err == nil {
-		profile.Weight = weight
-	}
+	profile.Age = extractInt(contents, ageRe)
+	profile.Height = extractInt(contents, heightRe)
+	profile.Weight = extractInt(contents, weightRe)
 
 	// string of profile
 	profile.Income = extractString(contents, incomeRe)
@@ -63,4 +54,12 @@ func extractString(contents []byte, re *regexp.Regexp) string {
 	} else {
 		return ""
 	}
+}
+
+func extractInt(contents []byte, re *regexp.Regexp) int {
+	i, err := strconv.Atoi(extractString(contents, re))
+	if err == nil {
+		return i
+	}
+	return 0
 }
