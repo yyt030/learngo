@@ -4,11 +4,18 @@ import (
 	"context"
 	"log"
 
+	"learngo/crawler/engine"
+
+	"github.com/pkg/errors"
 	"gopkg.in/olivere/elastic.v5"
 )
 
-func ItemSaver() chan interface{} {
-	out := make(chan interface{})
+func ItemSaver() chan engine.Item {
+	client, err := elastic.NewClient(elastic.SetSniff(false))
+	if err != nil {
+		panic(err)
+	}
+	out := make(chan engine.Item)
 	go func() {
 		itemCount := 0
 		for {
@@ -16,7 +23,7 @@ func ItemSaver() chan interface{} {
 			log.Printf("itemSaver got item: #%d: %v", itemCount, item)
 			itemCount++
 
-			_, err := saver(item)
+			err := saver(item, client)
 			if err != nil {
 				log.Printf("item saver error: saving item %v: %v",
 					item, err)
@@ -26,17 +33,20 @@ func ItemSaver() chan interface{} {
 	return out
 }
 
-func saver(item interface{}) (string, error) {
-	client, err := elastic.NewClient(elastic.SetSniff(false))
-	if err != nil {
-		return "", err
+func saver(item engine.Item, client *elastic.Client) error {
+	if item.Type == "" {
+		return errors.New("must supply type")
 	}
-	resp, err := client.Index().
+
+	indexService := client.Index().
 		Index("dating_profile").
-		Type("zhenai").BodyJson(item).
-		Do(context.Background())
-	if err != nil {
-		return "", err
+		Type(item.Type).BodyJson(item)
+	if item.Id != "" {
+		indexService.Id(item.Id)
 	}
-	return resp.Id, nil
+	_, err := indexService.Do(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
 }
