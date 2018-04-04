@@ -15,7 +15,7 @@ type Profile struct {
 	Hokou      string
 	Xinzuo     string
 	House      string
-	Cat        string
+	Car        string
 }
 
 func FromJsonObj(o interface{}) (Profile, error) {
