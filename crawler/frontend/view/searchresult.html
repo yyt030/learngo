@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="css/global.css"/>
+</head>
+<body data-mod="" class="">
+<div class="wrap">
+    <div class="container">
+        <div class="row">
+            <div class="input-group-sm">
+                <form method="get" action="/search">
+                    <input type="text" class="form-control" name="q" value="{{.Query}}" placeholder="输入搜索关键字">
+                    <button class="btn-primary" type="submit">Go!</button>
+                </form>
+            </div><!-- /input-group -->
+            <h4 class="col-xs-6 col-md-6">共为你找到相关结果约为{{.Hits}}个。显示从{{.Start}}起共{{len .Items}}个</h4>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-12 main">
+                <div class="stream-list question-stream">
+                {{if .Items}}
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>名字</th>
+                            <th>性别</th>
+                            <th>年龄</th>
+                            <th>身高</th>
+                            <th>体重</th>
+                            <th>收入</th>
+                            <th>学历</th>
+                            <th>家庭</th>
+                            <th>户口</th>
+                            <th>星座</th>
+                            <th>房产</th>
+                            <th>车</th>
+                        </tr>
+                        </thead>
+                    {{range .Items}}
+                    <tbody>
+                    <tr>
+                        <td><a href="{{.Url}}">{{.Payload.Name}}</a></td>
+                    {{with .Payload}}
+                        <td>{{.Gender}}</td>
+                        <td>{{.Age}}岁</td>
+                        <td>{{.Height}}cm</td>
+                        <td>{{.Weight}}kg</td>
+                        <td>{{.Income}}</td>
+                        <td>{{.Education}}</td>
+                        <td>{{.Occupation}}</td>
+                        <td>{{.Hokou}}</td>
+                        <td>{{.Xinzuo}}</td>
+                        <td>{{.House}}</td>
+                        <td>{{.Cat}}</td>
+                    {{end}}
+                    </tr>
+                    {{end}}
+                    </tbody>
+                    </table>
+                {{else}}
+                    <div>没有找到相关用户</div>
+                {{end}}
+                </div><!-- /.stream-list -->
+
+                <div class="text-center">
+                    <ul class="pagination">
+                    {{if ge .PrevFrom 0}}
+                        <li><a href="search?q={{.Query}}&from={{.PrevFrom}}">上一页</a></li>
+                    {{end}}
+                        <li><a href="search?q={{.Query}}&from={{.NextFrom}}">下一页</a></li>
+                    </ul>
+                </div>
+            </div><!-- /.main -->
+        </div>
+    </div>
+</body>
+</html>
