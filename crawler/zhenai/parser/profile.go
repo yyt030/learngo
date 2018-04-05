@@ -40,7 +40,7 @@ func ParseProfile(contents []byte, url, name string) engine.ParseResult {
 	profile.Occupation = extractString(contents, occupationRe)
 	profile.Hokou = extractString(contents, hokouRe)
 	profile.House = extractString(contents, houseRe)
-	profile.Cat = extractString(contents, carRe)
+	profile.Car = extractString(contents, carRe)
 	profile.Name = name
 
 	result := engine.ParseResult{
