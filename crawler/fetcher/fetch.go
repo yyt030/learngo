@@ -8,16 +8,19 @@ import (
 	"net/http"
 	"time"
 
+	"learngo/crawler_distributed/config"
+
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
 
-var rateLimiter = time.Tick(10 * time.Millisecond)
+var rateLimiter = time.Tick(time.Second / config.Qps)
 
 func Fetch(url string) ([]byte, error) {
 	<-rateLimiter
+	log.Printf("fetching url %s", url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err

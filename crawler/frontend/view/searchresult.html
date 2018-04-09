@@ -14,18 +14,8 @@
                     <button class="btn-primary" type="submit">Go!</button>
                 </form>
             </div><!-- /input-group -->
-            <h4 class="col-xs-6 col-md-6">共为你找到相关结果约为{{.Hits}}个。显示从{{.Start}}起共{{len .Items}}个</h4>
         </div>
-        <div class="col-sm-8 col-md-9 col-lg-9">
-            <div class="sf-header__logo"><h1><a href="/">SegmentFault</a></h1></div>
-            <div>
-                <form action="/search" class="header-search  hidden-sm hidden-xs pull-right">
-                    <button class="btn btn-link"><span class="sr-only">搜索</span><span
-                            class="glyphicon glyphicon-search"></span></button>
-                    <input id="searchBox" name="q" type="text" placeholder="搜索问题或关键字" class="form-control" value="">
-                </form>
-            </div>
-        </div>
+        <div><h4 class="col-xs-6 col-md-6">共为你找到相关结果约为{{.Hits}}个。显示从{{.Start}}起共{{len .Items}}个</h4></div>
         <div class="row">
             <div class="col-xs-12 col-md-12 main">
                 <div class="stream-list question-stream">
@@ -78,7 +68,9 @@
                     {{if ge .PrevFrom 0}}
                         <li><a href="search?q={{.Query}}&from={{.PrevFrom}}">上一页</a></li>
                     {{end}}
+                    {{if lt .NextFrom .Hits}}
                         <li><a href="search?q={{.Query}}&from={{.NextFrom}}">下一页</a></li>
+                    {{end}}
                     </ul>
                 </div>
             </div><!-- /.main -->
