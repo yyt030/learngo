@@ -14,13 +14,14 @@ func main() {
 	}
 
 	e := engine.ConcurrentEngine{
-		Scheduler: &scheduler.QueuedScheduler{},
-		WorkCount: 100,
-		ItemChan:  itemChan,
+		Scheduler:      &scheduler.QueuedScheduler{},
+		WorkCount:      100,
+		ItemChan:       itemChan,
+		RequestProcess: engine.Work,
 	}
 
 	e.Run(engine.Request{
-		Url:       "http://www.zhenai.com/zhenghun",
-		ParseFunc: parser.ParseCityList,
+		Url:    "http://www.zhenai.com/zhenghun",
+		Parser: engine.NewFuncParser(parser.ParseCityList, "ParseCityList"),
 	})
 }

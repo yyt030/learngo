@@ -29,7 +29,7 @@ func TestItemSaver(t *testing.T) {
 			Hokou:      "四川遂宁",
 			Xinzuo:     "双鱼座",
 			House:      "单位宿舍",
-			Cat:        "未购车",
+			Car:        "未购车",
 		}}
 
 	// TODO: try to start up elasticsearch search here using
@@ -39,9 +39,9 @@ func TestItemSaver(t *testing.T) {
 		t.Errorf("connect error: %v", err)
 	}
 
-	//Save expected item
+	//Saver expected item
 	const index = "dating_test"
-	err = saver(client, index, expected)
+	err = Saver(client, index, expected)
 	if err != nil {
 		t.Errorf("error: %v", err)
 	}
